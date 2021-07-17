@@ -1,23 +1,17 @@
 package com.mypractice.content.api.controller;
 
+import com.mypractice.content.api.dto.ContentDocumentDto;
+import com.mypractice.content.api.service.ContentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.mypractice.content.api.document.ContentDocument;
-import com.mypractice.content.api.dto.ContentDocumentDto;
-import com.mypractice.content.api.service.ContentService;
-
+import org.springframework.http.server.reactive.ServerHttpResponse;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/layer/api")
@@ -32,8 +26,12 @@ public class ContentApiController {
 	}
 
 	@PostMapping("/save-content")
-	public Mono<ContentDocumentDto> createContent(@RequestBody Mono<ContentDocumentDto> contentDocument) {
-		return service.createDocument(contentDocument);
+	public Mono<Void> createContent(@RequestBody @Valid Mono<ContentDocumentDto> contentDocument,
+												  ServerHttpResponse response,
+												  UriComponentsBuilder uriComponentsBuilder) {
+		return service.createDocument(contentDocument)
+				.doOnNext(contentDocumentDto -> setLocationHeader(response, uriComponentsBuilder, contentDocumentDto.getContenId()))
+				.then();
 	}
 
 	@GetMapping("/find-all-content")
@@ -44,7 +42,7 @@ public class ContentApiController {
 	@GetMapping("/find-content/{id}")
 	public Mono<ResponseEntity<ContentDocumentDto>> findContentById(@PathVariable("id") String contentId) {
 		return service.findOneDocument(contentId)
-				.map((content) -> new ResponseEntity<>(content, HttpStatus.OK))
+				.map(content -> new ResponseEntity<>(content, HttpStatus.OK))
 				.defaultIfEmpty(new ResponseEntity<>(HttpStatus.NOT_FOUND));
 	}
 
@@ -59,5 +57,12 @@ public class ContentApiController {
 		return service.updateDocument(contentId, contentDocument).map(update -> new ResponseEntity<>(update, HttpStatus.OK))
 				.defaultIfEmpty(new ResponseEntity<>(HttpStatus.NOT_FOUND));
 	}
-
+	private void setLocationHeader(ServerHttpResponse response,
+								   UriComponentsBuilder uriComponentsBuilder,
+								   String id) {
+		response.getHeaders().setLocation(uriComponentsBuilder
+				.path("/find-content/{id}")
+				.buildAndExpand(id)
+				.toUri());
+	}
 }

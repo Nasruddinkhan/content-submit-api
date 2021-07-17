@@ -1,22 +1,23 @@
 package com.mypractice.content.api.dto;
 
-import org.springframework.data.annotation.Id;
-
+import com.mypractice.content.api.constant.MessageConstants;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.ToString;
+
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
+
 @Builder
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-@Getter
-@Setter
 public class ContentDocumentDto {
-	public String contenId;
-	public String description;
+	private String contenId;
+	@NotEmpty(message = MessageConstants.FLD_EMPTY_VLD)
+	@Size(message = "Size minimum  10 max 20 charecher are allowed", min = 10, max = 20)
+	private String description;
 }
