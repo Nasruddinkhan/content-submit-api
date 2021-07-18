@@ -10,6 +10,6 @@ import lombok.Data;
 @Document
 public class ContentDocument {
 	@Id
-	public String contenId;
-	public String description;
+	private String contenId;
+	private String description;
 }

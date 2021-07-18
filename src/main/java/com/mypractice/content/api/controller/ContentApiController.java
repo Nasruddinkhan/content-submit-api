@@ -1,6 +1,7 @@
 package com.mypractice.content.api.controller;
 
 import com.mypractice.content.api.dto.ContentDocumentDto;
+import com.mypractice.content.api.exception.NotFoundException;
 import com.mypractice.content.api.service.ContentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -43,7 +44,7 @@ public class ContentApiController {
 	public Mono<ResponseEntity<ContentDocumentDto>> findContentById(@PathVariable("id") String contentId) {
 		return service.findOneDocument(contentId)
 				.map(content -> new ResponseEntity<>(content, HttpStatus.OK))
-				.defaultIfEmpty(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+				.switchIfEmpty(Mono.error(new NotFoundException( contentId +" is not found " )));
 	}
 
 	@DeleteMapping("/delete-content/{id}")
