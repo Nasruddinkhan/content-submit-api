@@ -2,6 +2,7 @@ package com.mypractice.content.api.controller;
 
 import com.mypractice.content.api.dto.ContentDocumentDto;
 import com.mypractice.content.api.exception.NotFoundException;
+import com.mypractice.content.api.service.ContentApiNotification;
 import com.mypractice.content.api.service.ContentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,11 +20,12 @@ import javax.validation.Valid;
 public class ContentApiController {
 
 	private final ContentService service;
-
+    private  final ContentApiNotification apiNotification;
 	@Autowired
-	public ContentApiController(ContentService service) {
+	public ContentApiController(ContentService service, ContentApiNotification apiNotification) {
 		super();
 		this.service = service;
+		this.apiNotification = apiNotification;
 	}
 
 	@PostMapping("/save-content")
@@ -31,7 +33,10 @@ public class ContentApiController {
 												  ServerHttpResponse response,
 												  UriComponentsBuilder uriComponentsBuilder) {
 		return service.createDocument(contentDocument)
-				.doOnNext(contentDocumentDto -> setLocationHeader(response, uriComponentsBuilder, contentDocumentDto.getContenId()))
+				.doOnNext(contentDocumentDto -> {
+					apiNotification.notificatorSubmitContentApi(contentDocumentDto);
+					setLocationHeader(response, uriComponentsBuilder, contentDocumentDto.getContenId());
+				})
 				.then();
 	}
 

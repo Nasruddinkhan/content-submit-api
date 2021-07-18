@@ -14,6 +14,6 @@ import javax.validation.constraints.Size;
 public class ContentDocumentDto {
 	private String contenId;
 	@NotEmpty(message = MessageConstants.FLD_EMPTY_VLD)
-	@Size(message = "Size minimum  {value} charecher are allowed", min = 10)
+	@Size(message = "Size minimum  {min} charecher are allowed", min = 10)
 	private String description;
 }

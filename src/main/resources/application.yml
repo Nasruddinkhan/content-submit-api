@@ -6,3 +6,6 @@ spring:
       host: localhost
       port:  27017
       database: content-api
+  kafka:
+    producer:
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
