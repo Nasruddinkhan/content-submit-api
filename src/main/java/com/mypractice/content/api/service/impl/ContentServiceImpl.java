@@ -1,5 +1,6 @@
 package com.mypractice.content.api.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +17,7 @@ import reactor.core.publisher.Sinks;
 
 @Transactional("reactiveTransactionManager")
 @Service
+@Slf4j
 public class ContentServiceImpl implements ContentService {
 
 	private final Sinks.Many<ContentDocumentDto> sink;
@@ -30,12 +32,14 @@ public class ContentServiceImpl implements ContentService {
 
 	@Override
 	public Flux<ContentDocumentDto> allContents() {
+
 		return repository.findAll().map(m -> DocumentToDtoUtil.map(m, ContentDocumentDto.class)).log()
 				.doOnNext(this.sink::tryEmitNext);
 	}
 
 	@Override
 	public Mono<ContentDocumentDto> findOneDocument(String contentId) {
+
 		return repository.findById(contentId).map(m -> DocumentToDtoUtil.map(m, ContentDocumentDto.class));
 	}
 

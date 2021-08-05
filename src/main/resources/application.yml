@@ -1,5 +1,5 @@
 server:
-  port: 8088
+  port: 8089
 spring:
   data:
     mongodb:
@@ -9,3 +9,14 @@ spring:
   kafka:
     producer:
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+jwt:
+  secretKey: abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789~!@#$%^&*()_+=';?><
+logging:
+  level:
+    com.mypractice.content.api: DEBUG
+    org.springframework.web: DEBUG
+    org.springframework.data.mongodb.core.MongoTemplate: DEBUG
+
+springdoc:
+  api-docs:
+    path: /content-openapi

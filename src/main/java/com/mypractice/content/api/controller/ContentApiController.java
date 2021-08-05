@@ -4,6 +4,7 @@ import com.mypractice.content.api.dto.ContentDocumentDto;
 import com.mypractice.content.api.exception.NotFoundException;
 import com.mypractice.content.api.service.ContentApiNotification;
 import com.mypractice.content.api.service.ContentService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +17,8 @@ import reactor.core.publisher.Mono;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/layer/api")
+@RequestMapping("/api")
+@SecurityRequirement(name = "contentapi")
 public class ContentApiController {
 
 	private final ContentService service;
@@ -28,7 +30,7 @@ public class ContentApiController {
 		this.apiNotification = apiNotification;
 	}
 
-	@PostMapping("/save-content")
+	@PostMapping("/content")
 	public Mono<Void> createContent(@RequestBody @Valid Mono<ContentDocumentDto> contentDocument,
 												  ServerHttpResponse response,
 												  UriComponentsBuilder uriComponentsBuilder) {
@@ -40,24 +42,25 @@ public class ContentApiController {
 				.then();
 	}
 
-	@GetMapping("/find-all-content")
+	@GetMapping("/content")
 	public Flux<ContentDocumentDto> findAllContent() {
 		return service.allContents();
 	}
 
-	@GetMapping("/find-content/{id}")
+	@GetMapping("/content/{id}")
 	public Mono<ResponseEntity<ContentDocumentDto>> findContentById(@PathVariable("id") String contentId) {
 		return service.findOneDocument(contentId)
 				.map(content -> new ResponseEntity<>(content, HttpStatus.OK))
 				.switchIfEmpty(Mono.error(new NotFoundException( contentId +" is not found " )));
 	}
 
-	@DeleteMapping("/delete-content/{id}")
+	@DeleteMapping("/content/{id}")
 	public Mono<Void> deleteContent(@PathVariable("id") String contentId) {
 		return service.deleteDocument(contentId);
 	}
 
-	@PutMapping("/update-content/{id}")
+
+	@PutMapping("/content/{id}")
 	public Mono<ResponseEntity<ContentDocumentDto>> updateContent(@RequestBody  Mono<ContentDocumentDto> contentDocument,
 			@PathVariable("id") String contentId) {
 		return service.updateDocument(contentId, contentDocument).map(update -> new ResponseEntity<>(update, HttpStatus.OK))
@@ -67,7 +70,7 @@ public class ContentApiController {
 								   UriComponentsBuilder uriComponentsBuilder,
 								   String id) {
 		response.getHeaders().setLocation(uriComponentsBuilder
-				.path("/find-content/{id}")
+				.path("/content/{id}")
 				.buildAndExpand(id)
 				.toUri());
 	}
