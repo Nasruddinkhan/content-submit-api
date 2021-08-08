@@ -1,5 +1,6 @@
 package com.mypractice.content.api.dto;
 
+import com.mypractice.content.api.constant.MessageConstants;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,9 +17,9 @@ public class LoginDto implements Serializable {
 
     private static final long serialVersionUID = -6986746375915710855L;
 
-    @NotBlank
+    @NotBlank(message = MessageConstants.FLD_EMPTY_VLD)
     private String username;
 
-    @NotBlank
+    @NotBlank(message = MessageConstants.FLD_EMPTY_VLD)
     private String password;
 }

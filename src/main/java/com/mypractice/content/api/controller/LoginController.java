@@ -45,4 +45,19 @@ public class LoginController {
                     return new ResponseEntity<>(tokenBody, httpHeaders, HttpStatus.OK);
                 });
     }
+
+    @PostMapping("/sign-up")
+    public Mono<ResponseEntity> signUp(@Valid @RequestBody Mono<LoginDto> authRequest) {
+
+        return authRequest
+                .flatMap(login -> this.authenticationManager
+                        .authenticate(new UsernamePasswordAuthenticationToken(login.getUsername(), login.getPassword()))
+                        .map(this.tokenProvider::createToken)).map(jwt -> {
+                    HttpHeaders httpHeaders = new HttpHeaders();
+                    httpHeaders.add(HttpHeaders.AUTHORIZATION, "myToken " + jwt);
+                    Map tokenBody = new HashMap();
+                    tokenBody.put("access_token", jwt);
+                    return new ResponseEntity<>(tokenBody, httpHeaders, HttpStatus.OK);
+                });
+    }
 }

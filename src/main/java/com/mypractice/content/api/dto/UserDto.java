@@ -1,10 +1,9 @@
-package com.mypractice.content.api.document;
+package com.mypractice.content.api.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nonapi.io.github.classgraph.json.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.ArrayList;
@@ -15,8 +14,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Document
-public class User {
-    @Id
+public class UserDto {
+
     private String id;
 
     private String username;

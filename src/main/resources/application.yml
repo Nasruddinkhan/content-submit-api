@@ -1,14 +1,20 @@
 server:
-  port: 8089
+  port: 8088
 spring:
   data:
     mongodb:
-      host: localhost
-      port:  27017
+      host: mymongodb
+      #host: localhost
+      port: 27017
+      #port: 27018
       database: content-api
   kafka:
+    bootstrap-servers: kafka-server:9092
     producer:
+      topic: upload-content-events-v1
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      retries: 3
+      acks: 1
 jwt:
   secretKey: abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789~!@#$%^&*()_+=';?><
 logging:

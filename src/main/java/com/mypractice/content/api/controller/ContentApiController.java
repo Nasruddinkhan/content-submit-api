@@ -17,7 +17,7 @@ import reactor.core.publisher.Mono;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/layer/api")
 @SecurityRequirement(name = "contentapi")
 public class ContentApiController {
 
