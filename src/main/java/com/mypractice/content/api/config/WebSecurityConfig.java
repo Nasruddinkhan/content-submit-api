@@ -30,7 +30,7 @@ public class WebSecurityConfig {
                 .authenticationManager(reactiveAuthenticationManager)
                 //.securityContextRepository(NoOpServerSecurityContextRepository.getInstance())
                 .authorizeExchange(it -> it
-                        .pathMatchers("/auth/login").permitAll()
+                        .pathMatchers("/auth/login", "/actuator/*").permitAll()
                         .pathMatchers(HttpMethod.DELETE).hasRole("ADMIN")
                         .pathMatchers(PATH_POSTS)
                         .authenticated()

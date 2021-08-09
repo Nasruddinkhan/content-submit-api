@@ -1,6 +1,22 @@
 server:
-  port: 8088
+  port: 0
+eureka:
+  client:
+    service-url:
+      defaultZone: http://edureka-service:8761/eureka
+  instance:
+    instance-id: ${spring.application.name}:${instance-id:${random.value}}
 spring:
+  application:
+    name: content-api
+  sleuth:
+    sampler:
+      probability: 1
+  zipkin:
+    base-url: http://zipkin-server:9411
+    sender:
+      type: web
+
   data:
     mongodb:
       host: mymongodb
@@ -19,10 +35,16 @@ jwt:
   secretKey: abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789~!@#$%^&*()_+=';?><
 logging:
   level:
-    com.mypractice.content.api: DEBUG
-    org.springframework.web: DEBUG
-    org.springframework.data.mongodb.core.MongoTemplate: DEBUG
+    com.mypractice.content.api: INFO
+    org.springframework.web: INFO
+    org.springframework.data.mongodb.core.MongoTemplate: INFO
 
 springdoc:
   api-docs:
     path: /content-openapi
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, httptrace,beans,routes,info

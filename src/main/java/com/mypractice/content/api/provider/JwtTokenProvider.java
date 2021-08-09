@@ -83,6 +83,7 @@ public class JwtTokenProvider {
         } catch (JwtException | IllegalArgumentException e) {
             log.info("Invalid JWT token: {}", e.getMessage());
             log.trace("Invalid JWT token trace.", e);
+           // throw e;
         }
         return false;
     }

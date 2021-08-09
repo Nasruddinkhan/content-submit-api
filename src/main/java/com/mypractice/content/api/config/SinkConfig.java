@@ -11,6 +11,7 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.reactive.config.EnableWebFlux;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Sinks;
+
 @EnableWebFlux
 @Configuration
 public class SinkConfig {

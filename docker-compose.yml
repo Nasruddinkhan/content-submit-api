@@ -23,14 +23,50 @@ services:
       - my-app-network
   content-submit-api:
     container_name: content-api
+    build:
+      context: .
+      dockerfile: Dockerfile
     image: nasruddinkhan/content-submit-api:0.0.1-SNAPSHOT
     restart: on-failure
     ports:
       - 8087:8088
+      - 7087:8088
+      - 6087:8088
     environment:
       WAIT_HOSTS: mymongodb:27017
     depends_on:
       - docker-mymongodb
+      - edureka-service
+      - zipkin-server
+    networks:
+      - my-app-network
+  edureka-service:
+    container_name: edureka-service
+    image: nasruddinkhan/edureka-service:0.0.1-SNAPSHOT
+    restart: on-failure
+    ports:
+      - 8761:8761
+    depends_on:
+      - zipkin-server
+    networks:
+      - my-app-network
+  api-gateway:
+    container_name: api-gateway
+    image: nasruddinkhan/api-gateway:0.0.1-SNAPSHOT
+    restart: on-failure
+    ports:
+      - 8002:8002
+    depends_on:
+      - edureka-service
+      - zipkin-server
+    networks:
+      - my-app-network
+  zipkin-server:
+    container_name: zipkin-server
+    image: openzipkin/zipkin
+    restart: on-failure
+    ports:
+      - 9411:9411
     networks:
       - my-app-network
   docker-mymongodb:
