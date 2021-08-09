@@ -23,10 +23,15 @@ services:
       - my-app-network
   content-submit-api:
     container_name: content-api
+    build:
+      context: .
+      dockerfile: Dockerfile
     image: nasruddinkhan/content-submit-api:0.0.1-SNAPSHOT
     restart: on-failure
     ports:
       - 8087:8088
+      - 9087:8088
+      - 1087:8088
     environment:
       WAIT_HOSTS: mymongodb:27017
     depends_on:
